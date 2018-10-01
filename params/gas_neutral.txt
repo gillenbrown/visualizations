@@ -1,4 +1,4 @@
 field = gas, HI_density
-width = 50 kpc
+width = 30 kpc
 depth = 10 kpc
 cmap = viridis
