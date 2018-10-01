@@ -1,14 +1,15 @@
+import yt_tools
 import sys
-config_file = sys.path[1]
+config_file = sys.argv[1]
 
 import visualizations_base as vb
 
 params = vb.read_config(config_file)
 
 for ds in vb.ds_ts:
+    yt_tools.add_species_fields(ds)
     a = ds.scale_factor
     print("Making star plots for a={}".format(a))
-
     stars_plot = vb.make_base_plot(ds=ds, field=params["field"],
                                    width=params["width"], depth=params["depth"],
                                    cm=params["cm_obj"])

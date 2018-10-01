@@ -1,10 +1,9 @@
 import yt
 yt.funcs.mylog.setLevel(50)
 import yt_tools
-yt_tools.add_species_fields()
 import matplotlib
-import matplotlib.pyplot as plt
 matplotlib.use("Agg")  # for use on SSH
+import matplotlib.pyplot as plt
 
 ds_ts = yt.load("/u/home/hliastro/code/ART/data_local/NBm/NBm_200SFE_tidal_writeout/OUT/continuous_a*.art")
 halos_dir = "/u/home/gillenb/code/halo_trees/tidal_writeout/rockstar_halos/"
@@ -13,11 +12,12 @@ def read_config(name):
     with open("./params/{}.txt".format(name), "r") as in_file:
         params = dict()
         for line in in_file:
-            split = line.split()
-            if len(split) != 3:
+            split = line.split("=")
+            if len(split) != 2:
+                print(name, line)
                 raise ValueError("Config file {} must have the format: \n"
                                  "parameter = value.".format(name))
-            params[split[0]] = split[2]
+            params[split[0].strip()] = split[1].strip()
 
     # Make sure the use didn't leave anything out or have extra parameters.
     needed_params = ["field", "cmap", "width", "depth"]
@@ -28,14 +28,18 @@ def read_config(name):
         raise ValueError(err_str.format(name, *needed_params))
     for p in needed_params:
         if p not in params:
+            print(p, params)
             raise ValueError("{} needed in config file {}".format(p, name))
 
     # use the name of the file for the name, then parse other params
     params["name"] = name
-    params["field"] = tuple(params["field"])
-    params["width"] = tuple(params["width"])
-    params["depth"] = tuple(params["depth"])
+    params["field"] = tuple([s.strip() for s in params["field"].split(",")])
+    params["width"] = params["width"].split()
+    params["depth"] = params["depth"].split()
+    params["width"][0] = float(params["width"][0])
+    params["depth"][0] = float(params["depth"][0])
     params["cm_obj"] = plt.get_cmap(params["cmap"])
+    
     return params
 
 def find_projection_axis(ds, halo):
