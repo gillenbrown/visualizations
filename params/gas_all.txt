@@ -1,0 +1,4 @@
+field = ('gas', 'density')
+width = (50, "kpc")
+depth = (10, "kpc")
+cmap = viridis
