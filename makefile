@@ -41,16 +41,16 @@ all: $(target_names)
 
 # ------------------------------------------------------------------------------
 $(stars_all_output): $(stars_all_flag)
-	ffmpeg -framerate 2 -pattern_type glob -i $(stars_all_plots) -r 30 $(stars_all_output)
+	ffmpeg -framerate 2 -pattern_type glob -i '$(stars_all_plots)' -r 30 $(stars_all_output)
 
 $(gas_all_output): $(gas_all_flag)
-	ffmpeg -framerate 2 -pattern_type glob -i $(gas_all_plots) -r 30 $(gas_all_output)
+	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_all_plots)' -r 30 $(gas_all_output)
 
 $(gas_neutral_output): $(gas_neutral_flag)
-	ffmpeg -framerate 2 -pattern_type glob -i $(gas_neutral_plots) -r 30 $(gas_neutral_output)
+	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_neutral_plots)' -r 30 $(gas_neutral_output)
 
 $(gas_molecular_output): $(gas_molecular_flag)
-	ffmpeg -framerate 2 -pattern_type glob -i $(gas_molecular_plots) -r 30 $(gas_molecular_output)
+	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_molecular_plots)' -r 30 $(gas_molecular_output)
 
 # ------------------------------------------------------------------------------
 
