@@ -38,7 +38,11 @@ def read_config(name):
     params["depth"] = params["depth"].split()
     params["width"][0] = float(params["width"][0])
     params["depth"][0] = float(params["depth"][0])
-    params["cm_obj"] = plt.get_cmap(params["cmap"])
+
+    
+     cmap = plt.get_cmap(params["cmap"])
+     cmap.set_bad(cmap(0))
+     params["cm_obj"] = cmap
     
     return params
 
