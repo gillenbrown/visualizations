@@ -1,8 +1,8 @@
-from yt_tools import galaxy
+import yt_tools
 import visualizations_base as vb
 
 with open("centers.txt", "w") as out_file:
-    line_fmt = "{:<7}\t{:<15}\t{:<15}\t{:<15}"
+    line_fmt = "{:<7}\t{:<15}\t{:<15}\t{:<15}\n"
     out_file.write(line_fmt.format("# a", "x [pc]", "y [pc]", "z [pc]"))
     for ds in vb.ds_ts:
         a = ds.scale_factor
@@ -15,7 +15,8 @@ with open("centers.txt", "w") as out_file:
         radius = largest_halo.data_object.radius
         j_radius = 0.2 * radius
 
-        gal = galaxy.Galaxy(ds, center, radius=radius, j_radius=j_radius)
+        gal = yt_tools.galaxy.Galaxy(ds, center, radius=radius, 
+                                     j_radius=j_radius)
         gal.centering(accuracy=10)
         
         x, y, z = gal.center.in_units("pc").value
