@@ -35,6 +35,7 @@ py_dependencies = $(base_python_file) $(run_python_file)
 
 centers_file = centers.txt
 center_python_file = star_centers.py
+copy_plots_file = plot_copy.py
 
 all: $(target_names)
 
@@ -44,15 +45,19 @@ all: $(target_names)
 
 # ------------------------------------------------------------------------------
 $(stars_all_output): $(stars_all_flag)
+	python $(copy_plots_file) $(stars_all_output)
 	ffmpeg -framerate 2 -pattern_type glob -i '$(stars_all_plots)' -r 30 $(stars_all_output)
 
 $(gas_all_output): $(gas_all_flag)
+	python $(copy_plots_file) $(gas_all_output)
 	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_all_plots)' -r 30 $(gas_all_output)
 
 $(gas_neutral_output): $(gas_neutral_flag)
+	python $(copy_plots_file) $(gas_neutral_output)
 	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_neutral_plots)' -r 30 $(gas_neutral_output)
 
 $(gas_molecular_output): $(gas_molecular_flag)
+	python $(copy_plots_file) $(gas_molecular_output)
 	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_molecular_plots)' -r 30 $(gas_molecular_output)
 
 # ------------------------------------------------------------------------------
