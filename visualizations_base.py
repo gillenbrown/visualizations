@@ -1,6 +1,7 @@
 import yt
 yt.funcs.mylog.setLevel(50)
 import yt_tools
+import numpy as np
 import matplotlib
 matplotlib.use("Agg")  # for use on SSH
 import matplotlib.pyplot as plt
@@ -71,9 +72,11 @@ def find_projection_axis(ds, halo):
     
     perpendicular_vector = axis_ratios_object.c_vec
     north_vector = axis_ratios_object.a_vec
-    if perpendicular_vector is None:
+    if perpendicular_vector is None or
+            np.allclose(perpendicular_vector, [0, 0, 0]):
         perpendicular_vector = [1, 0, 0]
-    if north_vector is None:
+    if north_vector is None or
+            np.allclose(north_vector, [0, 0, 0]):
         north_vector = [0, 1, 0]
     return perpendicular_vector, north_vector
 
