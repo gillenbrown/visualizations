@@ -58,9 +58,7 @@ def read_star_centers():
 
     return centers_dict
 
-def find_projection_axis(ds, halo):
-    center = yt_tools.get_halo_center(halo)
-    
+def find_projection_axis(ds, halo, center):
     half_virial_sphere = ds.sphere(center=center,
                                    radius=0.2*halo.data_object.radius)
     x = half_virial_sphere[('STAR', 'particle_position_relative_x')]
@@ -72,11 +70,9 @@ def find_projection_axis(ds, halo):
     
     perpendicular_vector = axis_ratios_object.c_vec
     north_vector = axis_ratios_object.a_vec
-    if perpendicular_vector is None or
-            np.allclose(perpendicular_vector, [0, 0, 0]):
+    if perpendicular_vector is None:
         perpendicular_vector = [1, 0, 0]
-    if north_vector is None or
-            np.allclose(north_vector, [0, 0, 0]):
+    if north_vector is None:
         north_vector = [0, 1, 0]
     return perpendicular_vector, north_vector
 
@@ -86,8 +82,10 @@ def plot_basics(ds):
     largest_halo = yt_tools.find_largest_halo(hc)
     a = str(ds.scale_factor)
     center = read_star_centers()[a]  # not the most elegant
+    if np.isnan(center[0]):
+        center = yt_tools.get_halo_center(largest_halo)
 
-    perp_vector, north_vector = find_projection_axis(ds, largest_halo)
+    perp_vector, north_vector = find_projection_axis(ds, largest_halo, center)
     
     return perp_vector, north_vector, center
 
