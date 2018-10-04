@@ -45,6 +45,18 @@ def read_config(name):
     
     return params
 
+def read_star_centers():
+    centers_dict = dict()
+    with open("centers.txt", "r") as in_file:
+        for line in in_file:
+            if line.startswith("#"):
+                continue
+            a, x, y, z = line.split()
+            center = [float(x), float(y), float(z)] * yt.units.pc
+            centers_dict[a] = center
+
+    return centers_dict
+
 def find_projection_axis(ds, halo):
     center = yt_tools.get_halo_center(halo)
     
@@ -69,8 +81,9 @@ def plot_basics(ds):
     halo_file = yt_tools.find_correct_halo_file(halos_dir, ds)
     hc = yt_tools.make_halo_catalog(halo_file, ds)
     largest_halo = yt_tools.find_largest_halo(hc)
-    center = yt_tools.get_halo_center(largest_halo)
-    
+    a = str(ds.scale_factor)
+    center = read_star_centers()[a]  # not the most elegant
+
     perp_vector, north_vector = find_projection_axis(ds, largest_halo)
     
     return perp_vector, north_vector, center

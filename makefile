@@ -33,6 +33,9 @@ base_python_file = visualizations_base.py
 run_python_file = make_plot.py
 py_dependencies = $(base_python_file) $(run_python_file)
 
+centers_file = centers.txt
+center_python_file = star_centers.py
+
 all: $(target_names)
 
 # ------------------------------------------------------------------------------
@@ -57,14 +60,22 @@ $(gas_molecular_output): $(gas_molecular_flag)
 # Making the individual plots
 
 # ------------------------------------------------------------------------------
-$(stars_all_flag): $(py_dependencies)
+$(stars_all_flag): $(py_dependencies) $(centers_file)
 	python $(run_python_file) $(stars_all)
 
-$(gas_all_flag): $(py_dependencies)
+$(gas_all_flag): $(py_dependencies) $(centers_file)
 	python $(run_python_file) $(gas_all)
 
-$(gas_neutral_flag): $(py_dependencies)
+$(gas_neutral_flag): $(py_dependencies) $(centers_file)
 	python $(run_python_file) $(gas_neutral)
 
-$(gas_molecular_flag): $(py_dependencies)
+$(gas_molecular_flag): $(py_dependencies) $(centers_file)
 	python $(run_python_file) $(gas_molecular)
+
+# ------------------------------------------------------------------------------
+
+# Doing the star centering
+
+# ------------------------------------------------------------------------------
+$(centers_file): $(center_python_file)
+	python $(center_python_file)
