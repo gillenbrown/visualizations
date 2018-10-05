@@ -33,7 +33,8 @@ def move_file(item_name, old_directory, new_directory):
     """
     # add the time to the filename, then move it.
     new_filename = time_str + "_" + item_name
-    os.rename(old_directory + os.sep + item_name,
-              new_directory + os.sep + new_filename)
+    if item_name in os.listdir(old_directory):
+        os.rename(old_directory + os.sep + item_name,
+                  new_directory + os.sep + new_filename)
 
 move_file(copy_file, movies_dir, movies_old_dir)
