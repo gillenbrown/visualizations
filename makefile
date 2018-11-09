@@ -1,8 +1,22 @@
-to_param = params/$(1).mp4
+# I put a note in Trello describing these options, but will summarize here.
+codec = libx264  # allows control over compression
+#`-crf 17`: This selects the constant rate factor mode, which allows for better 
+# control over the quality. See here: 
+# https://slhck.info/video/2017/03/01/rate-control.html 
+# The 17 is for the level of compression. This ranges from 0 to 51. 23 is 
+# typical, and 17 should be indistinguishable from no compression at all.
+# `-pix_fmt yuv420p`: This selects the pixel format used. I don't know exactly 
+# what this does, but it does allow Quicktime to play it, while without this it 
+# won't recognize the file. 
+codec_flags = -crf 17 -pix_fmt yuv420p
+output_filetype = mp4
+framerate = 2  # input and output framerate
+
+to_param = params/$(1).txt
 to_plots_glob = plots/$(1)_a_0.*.png
 to_flag = .finished_$(1).txt
-to_output = movies/$(1).mp4
-to_output_filename = $(1).mp4
+to_output_filename = $(1).$(output_filetype)
+to_output = movies/$(call to_output_filename,$(1))
 
 stars_all = stars_all
 stars_all_param = $(call to_param,$(stars_all))
@@ -51,19 +65,19 @@ all: $(target_names)
 # ------------------------------------------------------------------------------
 $(stars_all_output): $(stars_all_flag)
 	python $(copy_plots_file) $(stars_all_output_filename)
-	ffmpeg -framerate 2 -pattern_type glob -i '$(stars_all_plots)' -r 30 $(stars_all_output)
+	ffmpeg -framerate $(framerate) -pattern_type glob -i '$(stars_all_plots)' -c:v $(codec) $(codec_flags) $(stars_all_output)
 
 $(gas_all_output): $(gas_all_flag)
 	python $(copy_plots_file) $(gas_all_output_filename)
-	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_all_plots)' -r 30 $(gas_all_output)
+	ffmpeg -framerate $(framerate) -pattern_type glob -i '$(gas_all_plots)' -c:v $(codec) $(codec_flags) $(gas_all_output)
 
 $(gas_neutral_output): $(gas_neutral_flag)
 	python $(copy_plots_file) $(gas_neutral_output_filename)
-	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_neutral_plots)' -r 30 $(gas_neutral_output)
+	ffmpeg -framerate $(framerate) -pattern_type glob -i '$(gas_neutral_plots)' -c:v $(codec) $(codec_flags) $(gas_neutral_output)
 
 $(gas_molecular_output): $(gas_molecular_flag)
 	python $(copy_plots_file) $(gas_molecular_output_filename)
-	ffmpeg -framerate 2 -pattern_type glob -i '$(gas_molecular_plots)' -r 30 $(gas_molecular_output)
+	ffmpeg -framerate $(framerate) -pattern_type glob -i '$(gas_molecular_plots)' -c:v $(codec) $(codec_flags) $(gas_molecular_output)
 
 # ------------------------------------------------------------------------------
 

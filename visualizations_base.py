@@ -9,6 +9,14 @@ import matplotlib.pyplot as plt
 ds_ts = yt.load("/u/home/hliastro/code/ART/data_local/NBm/NBm_200SFE_tidal_writeout/OUT/continuous_a*.art")
 halos_dir = "/u/home/gillenb/code/halo_trees/tidal_writeout/rockstar_halos/"
 
+def parse_lengths(ds, length_tuple):
+    """Put a length into the appropriate dataset units.
+
+    :param length_tuple: A two item tuple where the first item is a float 
+                         holding the value of the length, and the second
+                         is a string with the unit."""
+    return ds.quan(length_tuple[0], length_tuple[1])
+
 def read_config(name):
     with open("./params/{}.txt".format(name), "r") as in_file:
         params = dict()
@@ -90,11 +98,18 @@ def plot_basics(ds):
     return perp_vector, north_vector, center
 
 def make_base_plot(ds, field, width, depth, cm):
+    width = parse_lengths(ds, width)
+    depth = parse_lengths(ds, depth)
     normal, north, center = plot_basics(ds)
+    # Make a smaller data object to hopefully speed up computation. We make
+    # it bigger than the projection region to ensure nothing is missed.
+    ds_select = ds.disk(center=center, normal=normal, radius=2*width,
+                        height=2*depth)
 
     plot = yt.OffAxisProjectionPlot(ds, fields=field, center=center,
                                     normal=normal, north_vector=north,
-                                    width=width, depth=depth)
+                                    width=width, depth=depth,
+                                    data_source=ds_select)
     plot.set_cmap(field, cm)
     plot.set_zlim(field, 0.1, 10 ** 3)
     plot.annotate_timestamp(corner='upper_left', redshift=True,
